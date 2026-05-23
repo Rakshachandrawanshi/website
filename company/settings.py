@@ -149,6 +149,7 @@ STATIC_URL = "/static/"
 _global_static_dir = BASE_DIR / "static"
 STATICFILES_DIRS = [_global_static_dir] if _global_static_dir.exists() else []
 STATIC_ROOT = BASE_DIR / "staticfiles"
+WHITENOISE_USE_FINDERS = env_bool("WHITENOISE_USE_FINDERS", os.environ.get("RENDER") is not None)
 
 # Media files (Images)
 MEDIA_URL = "/media/"
