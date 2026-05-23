@@ -86,7 +86,10 @@ TEMPLATES = [
 WSGI_APPLICATION = "company.wsgi.application"
 
 # Database
-database_url = os.environ.get("DATABASE_URL")
+database_url = (os.environ.get("DATABASE_URL") or "").strip()
+database_url_placeholders = {"postgresql://...", "postgres://...", "..."}
+if database_url in database_url_placeholders:
+    database_url = ""
 if database_url:
     DATABASES = {
         "default": dj_database_url.parse(
