@@ -1,3 +1,6 @@
+import os
+
+from django.contrib.auth.hashers import make_password
 from django.db.models.signals import post_migrate, post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -21,6 +24,8 @@ def seed_public_site_content(sender, app_config, apps, **kwargs):
     Company = apps.get_model("main", "Company")
     Hero = apps.get_model("main", "Hero")
     Service = apps.get_model("main", "Service")
+    User = apps.get_model("auth", "User")
+    Profile = apps.get_model("main", "Profile")
 
     Company.objects.get_or_create(
         defaults={
@@ -57,3 +62,33 @@ def seed_public_site_content(sender, app_config, apps, **kwargs):
     ]
     for title, description in default_services:
         Service.objects.get_or_create(title=title, defaults={"description": description})
+
+    username = os.environ.get("DJANGO_SUPERUSER_USERNAME")
+    email = os.environ.get("DJANGO_SUPERUSER_EMAIL", "")
+    password = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
+
+    if username and password:
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                "email": email,
+                "is_staff": True,
+                "is_superuser": True,
+            },
+        )
+        changed = False
+        if not user.is_staff:
+            user.is_staff = True
+            changed = True
+        if not user.is_superuser:
+            user.is_superuser = True
+            changed = True
+        if email and user.email != email:
+            user.email = email
+            changed = True
+        if password:
+            user.password = make_password(password)
+            changed = True
+        if changed:
+            user.save()
+        Profile.objects.get_or_create(user=user, defaults={"role": "admin"})
