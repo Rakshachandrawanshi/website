@@ -25,6 +25,9 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required when DJANGO_DEBUG=False.")
 _raw_allowed = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 ALLOWED_HOSTS = [h.strip() for h in _raw_allowed.split(",") if h.strip()]
+render_hostname = (os.environ.get("RENDER_EXTERNAL_HOSTNAME") or "").strip()
+if render_hostname and render_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_hostname)
 if not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -220,3 +223,7 @@ JAZZMIN_SETTINGS = {
 
 _raw_csrf_origins = os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "http://127.0.0.1,http://localhost")
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _raw_csrf_origins.split(",") if origin.strip()]
+if render_hostname:
+    render_origin = f"https://{render_hostname}"
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
