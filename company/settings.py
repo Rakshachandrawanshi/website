@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     "main",
 ]
 
-if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+if os.environ.get("CLOUDINARY_URL"):
+    INSTALLED_APPS.extend(["cloudinary_storage", "cloudinary"])
+elif os.environ.get("AWS_STORAGE_BUCKET_NAME"):
     INSTALLED_APPS.append("storages")
 
 # Middleware
@@ -155,7 +157,16 @@ WHITENOISE_USE_FINDERS = env_bool("WHITENOISE_USE_FINDERS", os.environ.get("REND
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-if os.environ.get("AWS_STORAGE_BUCKET_NAME"):
+if os.environ.get("CLOUDINARY_URL"):
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+elif os.environ.get("AWS_STORAGE_BUCKET_NAME"):
     AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
     AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
