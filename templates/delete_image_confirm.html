@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="card p-4 shadow-lg form-card-narrow text-center">
+    <h3 class="mb-3">Delete Image</h3>
+
+    <p class="mb-3">
+      Are you sure you want to delete <strong>{{ gallery_image.title }}</strong>?
+    </p>
+
+    <div class="mb-4">
+      <img src="{{ gallery_image.image.url }}" alt="{{ gallery_image.title }}" style="max-width:100%; border-radius:14px;">
+    </div>
+
+    <form method="POST" class="d-flex flex-column gap-2">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary w-100">Yes, Delete</button>
+      <a href="{% url 'gallery' %}" class="btn btn-secondary w-100">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<style>
+.form-card-narrow {
+    max-width: 420px;
+    width: 100%;
+    border-radius: 15px;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero-panel reveal-up">
+    <div class="hero-grid">
+        <div>
+            <span class="eyebrow">Student-focused coaching</span>
+            <h1 class="hero-title">
+                {{ hero.title|default:"Dream bigger. Study smarter. Achieve with confidence." }}
+            </h1>
+            <p class="hero-copy mt-4">
+                {{ hero.subtitle|default:"A modern coaching environment with expert faculty, disciplined schedules, and personal mentoring for school, entrance, and career-focused learners." }}
+            </p>
+            <div class="hero-actions">
+                <a href="{% url 'register' %}" class="brand-btn">{{ hero.button_text|default:"Enroll Now" }}</a>
+                <a href="#courses" class="brand-btn-secondary">Learn More</a>
+            </div>
+            <div class="stats-strip">
+                <div class="stat-pill reveal-up stagger-1">
+                    <strong>{{ services|length }}</strong>
+                    <span>Course tracks</span>
+                </div>
+                <div class="stat-pill reveal-up stagger-2">
+                    <strong>6</strong>
+                    <span>Days of guided study</span>
+                </div>
+                <div class="stat-pill reveal-up stagger-3">
+                    <strong>{{ students|length }}</strong>
+                    <span>Featured results</span>
+                </div>
+            </div>
+        </div>
+
+        <aside class="hero-visual reveal-up stagger-2" aria-label="Coaching highlight">
+            {% for image in home_gallery %}
+                {% if forloop.first %}
+                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="hero-photo">
+                {% endif %}
+            {% empty %}
+                <img src="{% if company and company.logo %}{{ company.logo.url }}{% else %}{% static 'main/logo.png' %}{% endif %}" alt="{{ company.name|default:'Ideal Techno' }} logo" class="hero-photo hero-logo-art">
+            {% endfor %}
+            <div class="hero-achievement">
+                <span>Weekly tests</span>
+                <strong>Rank-focused feedback</strong>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<section class="section-block" id="courses">
+    <div class="section-heading reveal-up">
+        <p class="eyebrow">Courses</p>
+        <h2 class="section-title">Coaching programs built around clear goals.</h2>
+        <p class="section-copy mt-3">
+            Choose focused batches for foundation learning, board preparation, and competitive exam readiness.
+        </p>
+    </div>
+
+    <div class="feature-grid">
+        {% for service in services %}
+        <article class="feature-card reveal-up">
+            <div class="feature-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <h3>{{ service.title }}</h3>
+            <p class="section-copy mb-0">{{ service.description|default:"Structured classes, practice sheets, doubt support, and performance review for steady student growth." }}</p>
+        </article>
+        {% empty %}
+        <article class="feature-card reveal-up stagger-1">
+            <div class="feature-icon"><i class="fa-solid fa-square-root-variable"></i></div>
+            <h3>Foundation Batches</h3>
+            <p class="section-copy mb-0">Strong concepts for classes 8-10 with regular practice and parent-friendly progress updates.</p>
+        </article>
+        <article class="feature-card reveal-up stagger-2">
+            <div class="feature-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3>Board Excellence</h3>
+            <p class="section-copy mb-0">Syllabus-focused preparation with writing practice, revision cycles, and confidence-building tests.</p>
+        </article>
+        <article class="feature-card reveal-up stagger-3">
+            <div class="feature-icon"><i class="fa-solid fa-trophy"></i></div>
+            <h3>Entrance Prep</h3>
+            <p class="section-copy mb-0">Exam-oriented coaching for ambitious students with mock tests, analytics, and doubt clearing.</p>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading reveal-up">
+        <p class="eyebrow">Weekly schedule</p>
+        <h2 class="section-title">A disciplined rhythm students can trust.</h2>
+    </div>
+
+    <div class="table-wrap reveal-up">
+        <table class="coaching-table">
+            <thead>
+                <tr>
+                    <th>Batch</th>
+                    <th>Days</th>
+                    <th>Focus</th>
+                    <th>Highlight</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Foundation</td>
+                    <td>Mon, Wed, Fri</td>
+                    <td>Concept building and practice</td>
+                    <td><span class="achievement-highlight">Doubt clinic</span></td>
+                </tr>
+                <tr>
+                    <td>Board Prep</td>
+                    <td>Tue, Thu, Sat</td>
+                    <td>Chapter tests and revision</td>
+                    <td><span class="achievement-highlight">Writing practice</span></td>
+                </tr>
+                <tr>
+                    <td>Entrance</td>
+                    <td>Daily intensive</td>
+                    <td>Mock tests and ranking strategy</td>
+                    <td><span class="achievement-highlight">Weekly analysis</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading reveal-up">
+        <p class="eyebrow">Faculty highlights</p>
+        <h2 class="section-title">Mentors who keep learning practical and motivating.</h2>
+    </div>
+
+    <div class="faculty-grid">
+        <article class="faculty-card reveal-up stagger-1">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <h3>Expert Teachers</h3>
+            <p class="section-copy mb-0">Clear explanations, exam-aware guidance, and patient support for every learner.</p>
+        </article>
+        <article class="faculty-card reveal-up stagger-2">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <h3>Progress Mentors</h3>
+            <p class="section-copy mb-0">Regular review, test feedback, and study planning that help students stay consistent.</p>
+        </article>
+        <article class="faculty-card reveal-up stagger-3">
+            <i class="fa-solid fa-comments"></i>
+            <h3>Doubt Support</h3>
+            <p class="section-copy mb-0">Friendly doubt-clearing sessions so students can ask, retry, and improve with confidence.</p>
+        </article>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="testimonial-band reveal-up">
+        <div>
+            <p class="eyebrow">Testimonials</p>
+            <h2 class="section-title">Students feel supported from the first class.</h2>
+        </div>
+        <div class="testimonial-quote">
+            <p>"The weekly tests and teacher feedback made my preparation more focused. I knew what to improve every week."</p>
+            <strong>Parent and student feedback</strong>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="contact-band reveal-up">
+        <div>
+            <p class="eyebrow">Admissions open</p>
+            <h2 class="section-title">Start with a counseling session.</h2>
+            <p class="section-copy mt-3 mb-0">Talk to us about the right batch, schedule, and preparation plan for your goal.</p>
+        </div>
+        <div class="hero-actions m-0">
+            <a href="{% url 'register' %}" class="brand-btn">Enroll Now</a>
+            <a href="{% url 'contact' %}" class="brand-btn-secondary">Contact Us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

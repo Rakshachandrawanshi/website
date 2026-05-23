@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
+
+    <div class="card p-4 shadow-lg login-card">
+
+        <h3 class="text-center mb-4">🔐 Login</h3>
+
+        {% if error %}
+        <div class="alert alert-danger text-center">
+            ❌ {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label">👤 Username</label>
+                <input type="text" name="username" class="form-control"
+                       placeholder="Enter username" required autofocus>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">🔒 Password</label>
+
+                <div class="input-group">
+                    <input type="password" name="password" id="password"
+                           class="form-control"
+                           placeholder="Enter password" required>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="togglePassword()">
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <button type="submit"
+                    class="btn btn-primary w-100 fw-bold"
+                    id="login-submit">
+                🚀 Login
+            </button>
+
+        </form>
+
+        <!-- Links -->
+        <div class="text-center mt-3">
+            <small>
+                Don't have an account?
+                <a href="{% url 'register' %}">Register</a>
+            </small>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+.login-card {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+</style>
+
+<script>
+// 🔥 Show/Hide Password
+function togglePassword(){
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const submitButton = document.getElementById("login-submit");
+
+    if (!form || !submitButton) {
+        return;
+    }
+
+    form.addEventListener("submit", function () {
+        submitButton.disabled = true;
+        submitButton.innerText = "Logging in...";
+    });
+});
+</script>
+
+{% endblock %}

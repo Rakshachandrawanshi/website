@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="card shadow-lg border-0 student-form-card">
+    <div class="card-body p-4 p-lg-5">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+          <p class="text-uppercase text-muted small mb-1">Admin only</p>
+          <h2 class="fw-bold mb-0">Add Student Record</h2>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}
+          <div>{{ error }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="alert alert-danger border-0 shadow-sm mb-4">
+          <h5 class="mb-2">Student record could not be saved.</h5>
+          <p class="mb-2">Please fix the following fields and try again:</p>
+          <ul class="mb-0 ps-3">
+            {% for field in form %}
+              {% for error in field.errors %}
+              <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="row g-3">
+          {% for field in form %}
+          <div class="{% if field.name == 'permanent_address' or field.name == 'present_address' %}col-12{% else %}col-md-6{% endif %}">
+            <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+            <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <button type="submit" class="btn btn-success px-4">Save Student</button>
+          <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.student-form-card {
+    max-width: 1080px;
+    margin: 0 auto;
+    border-radius: 24px;
+}
+
+.student-form-card .is-invalid,
+.student-form-card input:invalid,
+.student-form-card select:invalid,
+.student-form-card textarea:invalid {
+    border-color: #dc3545;
+}
+</style>
+{% endblock %}

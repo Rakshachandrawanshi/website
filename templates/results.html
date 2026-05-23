@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-block">
+    <div class="section-heading reveal-up">
+        <p class="eyebrow">Achievement wall</p>
+        <h1 class="section-title">Student results that celebrate steady effort.</h1>
+        <p class="section-copy mt-3">Search achievers and review the outcomes that make our coaching community proud.</p>
+    </div>
+
+    <div class="results-toolbar reveal-up">
+        <input type="text" id="searchBox" placeholder="Search student by name" class="search-input">
+    </div>
+
+    <div class="table-wrap reveal-up">
+        <table class="coaching-table results-table" id="resultsContainer">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Exam</th>
+                    <th>Rank</th>
+                    <th>Marks</th>
+                    <th>Year</th>
+                    {% if is_admin %}<th>Actions</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr class="student-card">
+                    <td>
+                        <div class="student-cell">
+                            {% if student.photo %}
+                            <img src="{{ student.photo.url }}" alt="{{ student.name }}" class="student-thumb">
+                            {% else %}
+                            <span class="student-thumb student-initial">?</span>
+                            {% endif %}
+                            <strong class="name">{{ student.name }}</strong>
+                        </div>
+                    </td>
+                    <td>{{ student.exam_name }}</td>
+                    <td><span class="achievement-highlight">{{ student.rank }}</span></td>
+                    <td>{{ student.marks }}</td>
+                    <td>{{ student.year }}</td>
+                    {% if is_admin %}
+                    <td>
+                        <div class="action-row m-0">
+                            <a href="{% url 'edit_student' student.id %}" class="brand-btn-secondary">Edit</a>
+                            <a href="{% url 'delete_student' student.id %}" class="brand-btn">Delete</a>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if is_admin %}6{% else %}5{% endif %}" class="empty-table-cell">New student achievements will appear here.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+document.getElementById("searchBox").addEventListener("keyup", function () {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll(".student-card");
+
+    rows.forEach((row) => {
+        const name = row.querySelector(".name").innerText.toLowerCase();
+        row.style.display = name.includes(value) ? "table-row" : "none";
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="profile-layout">
+    <div class="profile-card reveal-up">
+        <img src="{{ profile.image.url|default:'/media/profile_images/default.png' }}" alt="{{ request.user.username }}" class="profile-photo">
+        <p class="eyebrow mt-4">Your profile</p>
+        <h1 class="section-title" style="font-size: clamp(2rem, 4vw, 3rem);">{{ request.user.username }}</h1>
+        <p class="section-copy mt-2 mb-0">{{ request.user.email|default:"No email added" }}</p>
+
+        {% if profile.role == "admin" %}
+        <span class="role-pill admin mt-4">Admin</span>
+        {% else %}
+        <span class="role-pill user mt-4">User</span>
+        {% endif %}
+
+        <div class="info-list">
+            <div class="info-item">
+                <strong>School</strong>
+                <div class="section-copy mb-0">{{ profile.school_name|default:"Not added" }}</div>
+            </div>
+            <div class="info-item">
+                <strong>Phone</strong>
+                <div class="section-copy mb-0">{{ profile.phone|default:"Not added" }}</div>
+            </div>
+        </div>
+
+        <div class="action-row justify-content-center">
+            <a href="{% url 'edit_profile' %}" class="brand-btn">Edit Profile</a>
+            <a href="{% url 'dashboard' %}" class="brand-btn-secondary">Dashboard</a>
+            {% if request.user.is_superuser or request.user.is_staff or profile.role == "admin" %}
+            <a href="{% url 'admin_dashboard' %}" class="brand-btn-secondary">Admin Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

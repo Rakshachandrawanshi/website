@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card p-4 shadow-lg mx-auto upload-card">
+    <h3 class="text-center mb-4">Upload Image</h3>
+
+    <form method="POST" enctype="multipart/form-data" id="uploadImageForm">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors|striptags }}</div>
+      {% endif %}
+
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.title.id_for_label }}">Image Title</label>
+        {{ form.title }}
+        {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.category.id_for_label }}">Category</label>
+        {{ form.category }}
+        {% for error in form.category.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.description.id_for_label }}">Description</label>
+        {{ form.description }}
+        {% for error in form.description.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3 form-check">
+        {{ form.show_on_home }}
+        <label class="form-check-label" for="{{ form.show_on_home.id_for_label }}">Show this image on the home page</label>
+        {% for error in form.show_on_home.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.image.id_for_label }}">Select Image</label>
+        {{ form.image }}
+        {% for error in form.image.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        <div class="form-text mt-2">Supported image uploads up to 10MB.</div>
+      </div>
+
+      <div class="text-center mb-3">
+        <img id="preview" style="display:none; max-width:100%; border-radius:10px;">
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary w-100 fw-bold" id="uploadSubmitBtn">
+          Upload
+        </button>
+        <a href="{% url 'gallery' %}" class="btn btn-secondary w-100">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.upload-card {
+    max-width: 520px;
+    width: 100%;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.upload-card:hover {
+    transform: translateY(-5px);
+}
+</style>
+
+<script>
+document.getElementById("imageInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+
+    if (file) {
+        if (file.size > 10 * 1024 * 1024) {
+            alert("Image size should be less than 10MB");
+            event.target.value = "";
+            preview.style.display = "none";
+            return;
+        }
+
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+});
+
+document.getElementById("uploadImageForm").addEventListener("submit", function(event) {
+    if (!this.checkValidity()) {
+        return;
+    }
+
+    const submitBtn = document.getElementById("uploadSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Uploading...";
+});
+</script>
+
+{% endblock %}

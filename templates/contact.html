@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="contact-layout">
+    <div class="contact-card reveal-up">
+        <div class="contact-grid">
+            <div class="contact-copy">
+                <p class="eyebrow">Let's connect</p>
+                <h1 class="section-title">A contact page that feels like the brand.</h1>
+                <p class="section-copy mt-3">
+                    Reach out for guidance, admissions, or support. The interface follows the same clean blue-and-white company style as the rest of the website.
+                </p>
+                <div class="info-list">
+                    <div class="info-item">
+                        <strong>Clear communication</strong>
+                        <div class="section-copy mb-0">Quick questions, admissions help, or academic guidance.</div>
+                    </div>
+                    <div class="info-item">
+                        <strong>Student-first support</strong>
+                        <div class="section-copy mb-0">A calmer, cleaner contact flow with better readability.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                {% if success %}
+                <div class="alert alert-success" style="border-radius:18px;">Message sent successfully.</div>
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger" style="border-radius:18px;">
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="POST" class="form-stack" id="contactForm">
+                    {% csrf_token %}
+
+                    <div>
+                        <label class="form-label">Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="text-warning small mt-2">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="text-warning small mt-2">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="form-label">Message</label>
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                        <div class="text-warning small mt-2">{{ form.message.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="brand-btn" id="contactSubmitBtn">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+document.getElementById("contactForm").addEventListener("submit", function() {
+    if (!this.checkValidity()) {
+        return;
+    }
+
+    const submitBtn = document.getElementById("contactSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Sending...";
+});
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- 🔥 Header + Dashboard -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">📸 Our Gallery</h3>
+
+        <div>
+            <a href="/dashboard/" class="btn btn-dark btn-sm">Dashboard</a>
+            {% if request.user.is_authenticated and request.user.profile.role|lower == "admin" %}
+            <a href="/gallery/upload/" class="btn btn-primary btn-sm">Upload</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 🔥 Gallery Grid -->
+    <div class="row g-4">
+
+        {% for img in images %}
+        <div class="col-lg-4 col-md-6">
+
+            <div class="gallery-card shadow-sm">
+
+                <img src="{{ img.image.url }}" 
+                     alt="{{ img.title }}"
+                     class="gallery-img"
+                     onclick="openModal('{{ img.image.url|escapejs }}')">
+
+                <div class="overlay">
+                    <h6>{{ img.title }}</h6>
+                </div>
+
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-center text-muted">No images uploaded yet</p>
+        {% endfor %}
+
+    </div>
+</div>
+<div>
+    <a href="/dashboard/" class="btn btn-dark btn-sm">Dashboard</a>
+
+    {% if is_admin %}
+    <a href="/gallery/upload/" class="btn btn-primary btn-sm">Upload</a>
+    {% endif %}
+</div>
+
+<!-- 🔥 Lightbox -->
+<div id="imgModal" class="gallery-lightbox">
+    <span class="close-btn" onclick="closeModal()">✖</span>
+    <img id="modalImg">
+</div>
+
+<style>
+.gallery-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.gallery-card:hover {
+    transform: translateY(-5px);
+}
+
+.gallery-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.gallery-card:hover .gallery-img {
+    transform: scale(1.1);
+}
+
+/* Overlay */
+.overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to top, rgba(17, 48, 126, 0.88), transparent);
+    color: white;
+    text-align: center;
+}
+
+/* Lightbox */
+.gallery-lightbox {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 31, 87, 0.92);
+    text-align: center;
+}
+
+.gallery-lightbox img {
+    max-width: 90%;
+    margin-top: 5%;
+    border-radius: 12px;
+}
+
+/* Close */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+</style>
+
+<script>
+function openModal(src){
+    document.getElementById("imgModal").style.display = "block";
+    document.getElementById("modalImg").src = src;
+}
+
+function closeModal(){
+    document.getElementById("imgModal").style.display = "none";
+}
+</script>
+
+{% endblock %}

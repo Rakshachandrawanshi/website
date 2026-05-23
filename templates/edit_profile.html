@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center contact-layout">
+
+    <div class="card p-4 shadow-lg form-card-narrow">
+
+        <h3 class="text-center mb-4">✏ Edit Profile</h3>
+
+        <!-- Errors -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger text-center">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 🔥 Current Profile Image -->
+        {% if form.instance.image %}
+        <div class="text-center mb-3">
+            <img src="{{ form.instance.image.url }}"
+                 class="profile-avatar-preview"
+                 id="previewImage"
+                 alt="Profile Image">
+        </div>
+        {% endif %}
+
+        <!-- FORM -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- School -->
+            <div class="mb-3">
+                <label class="form-label">🏫 School Name</label>
+                {{ form.school_name }}
+                {% if form.school_name.errors %}
+                <div class="text-danger small mt-1">{{ form.school_name.errors|striptags }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label class="form-label">📱 Phone</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <div class="text-danger small mt-1">{{ form.phone.errors|striptags }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-3">
+                <label class="form-label">📷 Profile Image</label>
+                {{ form.image }}
+                {% if form.image.errors %}
+                <div class="text-danger small mt-1">{{ form.image.errors|striptags }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">
+                    💾 Save Changes
+                </button>
+
+                <a href="{% url 'profile' %}" class="btn btn-secondary">
+                    ❌ Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+.form-card-narrow {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 16px;
+}
+
+/* Profile image */
+.profile-avatar-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #0d6efd;
+}
+</style>
+
+<script>
+// 🔥 Live Image Preview
+const input = document.querySelector('input[type="file"]');
+if(input){
+    input.addEventListener("change", function(event){
+        const preview = document.getElementById("previewImage");
+        if(preview && event.target.files[0]){
+            preview.src = URL.createObjectURL(event.target.files[0]);
+        }
+    });
+}
+</script>
+
+{% endblock %}

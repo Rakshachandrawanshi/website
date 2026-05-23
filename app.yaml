@@ -1,0 +1,4 @@
+name: idealtechno
+owner: rakshachandrawanshi6
+package: .
+kind: wasmer.io/App.v0

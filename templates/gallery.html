@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section-block">
+    <div class="section-heading reveal-up">
+        <p class="eyebrow">Visual story</p>
+        <div class="gallery-toolbar">
+            <div>
+                <h1 class="section-title">Gallery shaped by the brand.</h1>
+                <p class="section-copy mt-2 mb-0">A clean, luminous showcase that matches the logo's blue-and-gold identity.</p>
+            </div>
+            {% if is_admin %}
+            <a href="{% url 'upload_image' %}" class="brand-btn">Upload Image</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="gallery-grid">
+        {% for image in images %}
+        <article class="gallery-card reveal-up">
+            <img src="{{ image.image.url }}" alt="{{ image.title }}" class="gallery-img" onclick="openModal('{{ image.image.url|escapejs }}')">
+            <div class="gallery-meta">
+                <span class="gallery-tag">{{ image.category|default:"Brand Moment" }}</span>
+                <h3 class="mt-3 mb-2">{{ image.title }}</h3>
+                <p class="section-copy mb-0">{{ image.description|default:"Captured for a brighter, more inspiring student experience." }}</p>
+                {% if is_admin %}
+                <div class="action-row mt-3">
+                    <a href="{% url 'edit_image' image.id %}" class="brand-btn-secondary">Edit</a>
+                    <a href="{% url 'delete_image' image.id %}" class="brand-btn-secondary">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+        </article>
+        {% empty %}
+        <div class="glass-panel p-5 text-center" style="border-radius: 28px;">
+            <h3>No images uploaded yet</h3>
+            <p class="section-copy mb-0">The gallery will light up here once new moments are added.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div id="imgModal" class="modal">
+    <span class="close-btn" onclick="closeModal()" style="top:20px;right:28px;">&times;</span>
+    <img id="modalImg" style="max-width:90%;max-height:85vh;margin-top:4vh;border-radius:24px;border:1px solid rgba(255,255,255,0.18);">
+</div>
+
+<script>
+function openModal(src) {
+    document.getElementById("imgModal").style.display = "block";
+    document.getElementById("modalImg").src = src;
+}
+
+function closeModal() {
+    document.getElementById("imgModal").style.display = "none";
+}
+</script>
+{% endblock %}

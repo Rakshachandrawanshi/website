@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
+
+    <div class="card p-4 shadow-lg register-card">
+
+        <h2 class="text-center mb-4">📝 Register</h2>
+
+        {% if error %}
+        <div class="alert alert-danger text-center">
+            ❌ {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label">👤 Username</label>
+                <input type="text" name="username" class="form-control"
+                       placeholder="Enter username" required autofocus>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label">📧 Email</label>
+                <input type="email" name="email" class="form-control"
+                       placeholder="Enter email" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">🔒 Password</label>
+
+                <div class="input-group">
+                    <input type="password" name="password" id="password"
+                           class="form-control"
+                           placeholder="Enter password" required>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="togglePassword()">
+                        👁
+                    </button>
+                </div>
+            </div>
+
+            <!-- Button -->
+            <button type="submit"
+                    class="btn btn-primary w-100 fw-bold"
+                    id="register-submit">
+                🚀 Register
+            </button>
+
+        </form>
+
+        <!-- Login link -->
+        <div class="text-center mt-3">
+            <small>
+                Already have an account?
+                <a href="{% url 'login' %}">Login</a>
+            </small>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+.register-card {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.register-card:hover {
+    transform: translateY(-5px);
+}
+</style>
+
+<script>
+// 🔥 Show/Hide Password
+function togglePassword(){
+    const input = document.getElementById("password");
+    input.type = input.type === "password" ? "text" : "password";
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const submitButton = document.getElementById("register-submit");
+
+    if (!form || !submitButton) {
+        return;
+    }
+
+    form.addEventListener("submit", function () {
+        submitButton.disabled = true;
+        submitButton.innerText = "Creating...";
+    });
+});
+</script>
+
+{% endblock %}

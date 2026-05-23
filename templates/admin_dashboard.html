@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard-shell reveal-up">
+    <div class="dashboard-header">
+        <div>
+            <p class="eyebrow">Admin control center</p>
+            <h1 class="dashboard-title">Run the brand with clarity.</h1>
+            <p class="section-copy mt-2 mb-0">A brighter admin dashboard that matches Ideal Techno's logo and keeps key actions visible.</p>
+        </div>
+        <a href="{% url 'profile' %}" class="brand-btn-secondary">Admin Profile</a>
+    </div>
+
+    <div class="dashboard-nav">
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'site_settings' %}">Site Settings</a>
+        <a href="{% url 'gallery' %}">Gallery</a>
+        <a href="{% url 'results' %}">Results</a>
+        <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="dashboard-nav-button">Logout</button>
+        </form>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card reveal-up stagger-1">
+            <span class="metric-label">Total Users</span>
+            <strong class="metric-number">{{ users }}</strong>
+        </div>
+        <div class="dashboard-card reveal-up stagger-2">
+            <span class="metric-label">Students</span>
+            <strong class="metric-number">{{ students }}</strong>
+        </div>
+        <div class="dashboard-card reveal-up stagger-3">
+            <span class="metric-label">Gallery Images</span>
+            <strong class="metric-number">{{ images }}</strong>
+        </div>
+    </div>
+
+    <div class="feature-grid mt-4">
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-user-plus"></i></div>
+            <h3>Add student record</h3>
+            <p class="section-copy">Create a full student profile with contact details, academics, IDs, and photo upload.</p>
+            <a href="{% url 'add_student' %}" class="brand-btn mt-2">Add Student</a>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-images"></i></div>
+            <h3>Update the gallery</h3>
+            <p class="section-copy">Bring the visual side of the brand forward with new images and moments.</p>
+            <a href="{% url 'upload_image' %}" class="brand-btn-secondary mt-2">Upload Image</a>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-chart-simple"></i></div>
+            <h3>Manage student records</h3>
+            <p class="section-copy">Review student entries below and open any record for quick edits or deletion.</p>
+            <a href="#student-records" class="brand-btn-secondary mt-2">Open Records</a>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
+            <h3>Update site branding</h3>
+            <p class="section-copy">Edit company info, homepage hero content, and the website color theme.</p>
+            <a href="{% url 'site_settings' %}" class="brand-btn mt-2">Open Site Settings</a>
+        </article>
+    </div>
+
+    <section id="student-records" class="glass-panel mt-4 student-records-panel">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <p class="eyebrow mb-1">Student management</p>
+                <h2 class="section-title mb-0">Edit student data from the site dashboard.</h2>
+            </div>
+            <a href="{% url 'add_student' %}" class="brand-btn">Add New Student</a>
+        </div>
+
+        {% if student_records %}
+        <div class="table-responsive">
+            <table class="table student-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Student No</th>
+                        <th>Category</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in student_records %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                {% if student.photo %}
+                                <img src="{{ student.photo.url }}" alt="{{ student.name }}" class="student-thumb">
+                                {% else %}
+                                <div class="student-thumb student-thumb-fallback">{{ student.name|slice:":1" }}</div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-semibold">{{ student.name }}</div>
+                                    <div class="small text-muted">{{ student.gender }} | {{ student.dob }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ student.student_no }}</td>
+                        <td>{{ student.category }}</td>
+                        <td>{{ student.guardian_phone_no }}</td>
+                        <td>{{ student.email_id }}</td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{% url 'edit_student' student.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{% url 'delete_student' student.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3 class="h5 mb-2">No student records yet</h3>
+            <p class="section-copy mb-0">Create the first student record here and manage future edits directly from this dashboard.</p>
+        </div>
+        {% endif %}
+    </section>
+</section>
+
+<style>
+.student-records-panel {
+    border-radius: 28px;
+    padding: 2rem;
+}
+
+.student-table th,
+.student-table td {
+    vertical-align: middle;
+}
+
+.student-thumb {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(23, 55, 143, 0.12);
+}
+
+.student-thumb-fallback {
+    display: grid;
+    place-items: center;
+    background: rgba(23, 55, 143, 0.08);
+    color: var(--brand-blue-deep);
+    font-weight: 700;
+}
+
+.empty-state {
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.dashboard-nav-button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+}
+</style>
+{% endblock %}

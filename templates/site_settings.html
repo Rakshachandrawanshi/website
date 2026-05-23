@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard-shell reveal-up">
+    <div class="dashboard-header">
+        <div>
+            <p class="eyebrow">Site settings</p>
+            <h1 class="dashboard-title">Update site info and theme.</h1>
+            <p class="section-copy mt-2 mb-0">Manage your company branding, homepage content, and color palette from one admin page.</p>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="brand-btn-secondary">Back to Admin</a>
+    </div>
+
+    <div class="dashboard-nav">
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'site_settings' %}">Site Settings</a>
+        <a href="{% url 'gallery' %}">Gallery</a>
+        <a href="{% url 'results' %}">Results</a>
+    </div>
+
+    {% if success %}
+    <div class="alert alert-success mb-4">Site settings updated successfully.</div>
+    {% endif %}
+    {% if company_form.errors or hero_form.errors %}
+    <div class="alert alert-danger mb-4">
+        Please fix the highlighted fields and try again.
+    </div>
+    {% endif %}
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <h3 class="mb-4">Brand and Theme</h3>
+            <form method="post" enctype="multipart/form-data" class="form-stack">
+                {% csrf_token %}
+                <div>
+                    <label class="form-label" for="{{ company_form.name.id_for_label }}">Site Name</label>
+                    {{ company_form.name }}
+                    {% for error in company_form.name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ company_form.tagline.id_for_label }}">Tagline</label>
+                    {{ company_form.tagline }}
+                    {% for error in company_form.tagline.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ company_form.logo.id_for_label }}">Logo</label>
+                    {{ company_form.logo }}
+                    {% for error in company_form.logo.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    {% if company and company.logo %}
+                    <div class="mt-3">
+                        <img src="{{ company.logo.url }}" alt="{{ company.name|default:'Company logo' }}" class="profile-photo">
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ company_form.favicon.id_for_label }}">Favicon</label>
+                    {{ company_form.favicon }}
+                    {% for error in company_form.favicon.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    {% if company and company.favicon %}
+                    <div class="mt-3">
+                        <img src="{{ company.favicon.url }}" alt="{{ company.name|default:'Company favicon' }} favicon" style="width: 64px; height: 64px; object-fit: contain; border-radius: 12px; border: 1px solid rgba(23, 55, 143, 0.12); background: #fff; padding: 8px;">
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="feature-grid">
+                    <div>
+                        <label class="form-label" for="{{ company_form.primary_color.id_for_label }}">Primary Color</label>
+                        {{ company_form.primary_color }}
+                        {% for error in company_form.primary_color.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div>
+                        <label class="form-label" for="{{ company_form.accent_color.id_for_label }}">Accent Color</label>
+                        {{ company_form.accent_color }}
+                        {% for error in company_form.accent_color.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                    <div>
+                        <label class="form-label" for="{{ company_form.surface_tint.id_for_label }}">Surface Tint</label>
+                        {{ company_form.surface_tint }}
+                        {% for error in company_form.surface_tint.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <h3 class="mt-4 mb-3">Homepage Hero</h3>
+                <div>
+                    <label class="form-label" for="{{ hero_form.title.id_for_label }}">Hero Title</label>
+                    {{ hero_form.title }}
+                    {% for error in hero_form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ hero_form.subtitle.id_for_label }}">Hero Subtitle</label>
+                    {{ hero_form.subtitle }}
+                    {% for error in hero_form.subtitle.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ hero_form.button_text.id_for_label }}">Primary Button Text</label>
+                    {{ hero_form.button_text }}
+                    {% for error in hero_form.button_text.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ hero_form.image.id_for_label }}">Hero Image</label>
+                    {{ hero_form.image }}
+                    {% for error in hero_form.image.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    {% if hero and hero.image %}
+                    <div class="mt-3">
+                        <img src="{{ hero.image.url }}" alt="{{ hero.title|default:'Hero image' }}" class="gallery-img" style="height: 220px; border-radius: 18px;">
+                    </div>
+                    {% endif %}
+                </div>
+                <div>
+                    <label class="form-label" for="{{ hero_form.image_caption.id_for_label }}">Hero Image Description</label>
+                    {{ hero_form.image_caption }}
+                    {% for error in hero_form.image_caption.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+
+                <div class="action-row">
+                    <button type="submit" class="brand-btn">Save Site Settings</button>
+                    <a href="{% url 'admin_dashboard' %}" class="brand-btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="contact-card">
+            <h3 class="mb-3">Applies To</h3>
+            <div class="info-list">
+                <div class="info-item">
+                    <strong>Company identity</strong>
+                    <div class="section-copy mb-0">Header name, tagline, logo, and favicon update together.</div>
+                </div>
+                <div class="info-item">
+                    <strong>Homepage hero</strong>
+                    <div class="section-copy mb-0">Main title, subtitle, and register button text update from this page.</div>
+                </div>
+                <div class="info-item">
+                    <strong>Global colors</strong>
+                    <div class="section-copy mb-0">Primary, accent, and soft surface colors flow into the site's theme variables.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
